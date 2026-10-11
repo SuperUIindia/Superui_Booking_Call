@@ -2,8 +2,8 @@ import { useEffect } from 'react'
 import { getCalApi } from '@calcom/embed-react'
 import { Instagram, Mail, MoveUpRight, CalendarCheck } from 'lucide-react'
 
-const CAL_NAMESPACE = 'web-site-developer'
-const CAL_LINK = 'superui-cx4bmh/https-superui.in'
+const CAL_NAMESPACE = 'superui'
+const CAL_LINK = 'website-development'
 const CAL_CONFIG = JSON.stringify({ layout: 'month_view', useSlotsViewOnSmallScreen: 'true', overlayCalendar: 'true' })
 const SITE_URL = 'https://superui.in/'
 
