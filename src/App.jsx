@@ -1,20 +1,11 @@
 import { useEffect } from 'react'
-import { getCalApi } from '@calcom/embed-react'
-import { Instagram, Mail, MoveUpRight, CalendarCheck } from 'lucide-react'
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import Cal, { getCalApi } from '@calcom/embed-react'
+import { Instagram, Mail, MoveUpRight, CalendarCheck, ArrowLeft, ExternalLink } from 'lucide-react'
 import logo from '/superui_logo.png'
 
-const CAL_NAMESPACE = 'website-development'
-const CAL_LINK = 'superui/website-development'
-const CAL_CONFIG = JSON.stringify({ layout: 'month_view', useSlotsViewOnSmallScreen: 'true' })
+const BOOKING_DIRECT_URL = 'https://cal.com/superui/website-development?overlayCalendar=true'
 const SITE_URL = 'https://superui.in/'
-
-// Props that make the button open the Cal.com booking popup on the same page
-const calProps = {
-  type: 'button',
-  'data-cal-namespace': CAL_NAMESPACE,
-  'data-cal-link': CAL_LINK,
-  'data-cal-config': CAL_CONFIG,
-}
 
 // Grain texture (SVG noise) used by the background
 const GRAIN = "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")"
@@ -90,7 +81,7 @@ img { display: block; max-width: 100%; height: auto; }
 .brand-name { margin: 14px 0 0; font-size: 0.9375rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; }
 h1 { margin: clamp(18px, 3.5vh, 32px) 0 0; font-size: clamp(1.75rem, 5vw, 3rem); font-weight: 800; line-height: 1.12; letter-spacing: -0.04em; text-wrap: balance; }
 .lead { margin: clamp(14px, 2.5vh, 24px) 0 0; max-width: 46ch; font-size: clamp(0.9375rem, 2vw, 1.125rem); font-weight: 500; line-height: 1.65; color: var(--gray); text-wrap: pretty; }
-.btn { cursor: pointer; margin-top: clamp(24px, 4.5vh, 40px); width: 100%; max-width: 360px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 56px; padding: 0 28px; font-family: inherit; font-size: 1.0625rem; font-weight: 700; color: var(--white); background: var(--black); border: 2px solid var(--black); border-radius: var(--radius); transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease; }
+.btn { cursor: pointer; margin-top: clamp(24px, 4.5vh, 40px); width: 100%; max-width: 360px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 56px; padding: 0 28px; font-family: inherit; font-size: 1.0625rem; font-weight: 700; color: var(--white); background: var(--black); border: 2px solid var(--black); border-radius: var(--radius); text-decoration: none; transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease; }
 .btn:hover { background: var(--white); color: var(--black); transform: translateY(-2px); }
 .btn:active { transform: translateY(0) scale(0.98); }
 
@@ -102,9 +93,26 @@ h1 { margin: clamp(18px, 3.5vh, 32px) 0 0; font-size: clamp(1.75rem, 5vw, 3rem);
 /* ---------- Mobile-only fixed bars (hidden on larger screens) ---------- */
 .m-top, .m-bottom { display: none; }
 
+/* ---------- Booking Page Styles ---------- */
+.booking-page { position: relative; isolation: isolate; overflow-y: auto; min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; background: var(--smoke-bg); }
+.booking-header { display: flex; align-items: center; justify-content: space-between; padding: 16px var(--gutter); background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0, 0, 0, 0.08); position: sticky; top: 0; z-index: 20; }
+.back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 0.875rem; font-weight: 700; color: var(--black); padding: 8px 14px; border: 1.5px solid var(--black); border-radius: 10px; transition: all 0.2s ease; }
+.back-link:hover { background: var(--black); color: var(--white); }
+.booking-brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.booking-brand img { width: 34px; height: 34px; border-radius: 8px; }
+.external-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8125rem; font-weight: 600; color: var(--gray); padding: 8px 12px; border-radius: 8px; background: rgba(0, 0, 0, 0.04); transition: all 0.2s ease; }
+.external-btn:hover { background: rgba(0, 0, 0, 0.08); color: var(--black); }
+
+.booking-body { flex: 1; padding: clamp(16px, 3vh, 32px) var(--gutter); display: flex; flex-direction: column; align-items: center; }
+.booking-card { width: 100%; max-width: 960px; background: var(--white); border-radius: var(--radius); box-shadow: 0 30px 80px -25px rgba(150, 45, 0, 0.35); overflow: hidden; display: flex; flex-direction: column; min-height: 720px; border: 1px solid rgba(0, 0, 0, 0.06); }
+.booking-card iframe { width: 100%; height: 100%; min-height: 720px; border: none; flex: 1; }
+
 /* ---------- Responsive ---------- */
 @media (max-width: 760px) {
   .container { max-width: 560px; }
+  .booking-brand span { display: none; }
+  .booking-card { min-height: 640px; }
+  .booking-card iframe { min-height: 640px; }
 }
 
 /* Mobile: smaller sizes so everything fits in one screen (100dvh) */
@@ -131,6 +139,10 @@ h1 { margin: clamp(18px, 3.5vh, 32px) 0 0; font-size: clamp(1.75rem, 5vw, 3rem);
   .btn { margin-top: 18px; max-width: none; min-height: 48px; padding: 0 20px; font-size: 0.9375rem; }
   .contact { margin-top: 14px; padding-top: 12px; gap: 6px; }
   .contact a { justify-content: center; padding: 7px 10px; font-size: 0.75rem; gap: 6px; }
+
+  .booking-header { padding: 12px var(--gutter); }
+  .back-link { font-size: 0.75rem; padding: 6px 10px; }
+  .external-btn { font-size: 0.75rem; padding: 6px 8px; }
 }
 
 /* Very small phones */
@@ -159,26 +171,8 @@ h1 { margin: clamp(18px, 3.5vh, 32px) 0 0; font-size: clamp(1.75rem, 5vw, 3rem);
 }
 `
 
-function App() {
-  useEffect(() => {
-    let active = true
-    ;(async function () {
-      try {
-        const cal = await getCalApi({ namespace: CAL_NAMESPACE })
-        if (!active) return
-        cal('ui', {
-          hideEventTypeDetails: false,
-          layout: 'month_view',
-        })
-      } catch (error) {
-        console.error('Cal.com booking could not be initialized.', error)
-      }
-    })()
-    return () => {
-      active = false
-    }
-  }, [])
-
+// ---------- HOME PAGE (Route: /) ----------
+function HomePage() {
   return (
     <div className="page">
       <style>{css}</style>
@@ -212,10 +206,16 @@ function App() {
             Tell us what you’re working on. We’ll talk through your goals, requirements,
             and practical next steps. No big pitch, just a useful conversation.
           </p>
-          <button className="btn" {...calProps}>
-            <CalendarCheck size={20} className="pointer-events-none" aria-hidden="true" />
-            <span className="pointer-events-none">Book call</span>
-          </button>
+
+          {/* Navigates to the separate /book booking route */}
+          <Link
+            className="btn"
+            to="/book"
+            aria-label="Book call with SuperUI"
+          >
+            <CalendarCheck size={20} aria-hidden="true" />
+            Book call
+          </Link>
 
           <nav className="contact" aria-label="Contact">
             <a href="mailto:hello.superui@gmail.com">
@@ -236,6 +236,85 @@ function App() {
         </a>
       </div>
     </div>
+  )
+}
+
+// ---------- SEPARATE BOOKING PAGE (Routes: /book and /booking) ----------
+function BookingPage() {
+  useEffect(() => {
+    (async function () {
+      try {
+        const cal = await getCalApi({ namespace: 'website-development' })
+        cal('ui', {
+          hideEventTypeDetails: false,
+          layout: 'month_view',
+        })
+      } catch (err) {
+        console.error('Cal.com embed error:', err)
+      }
+    })()
+  }, [])
+
+  return (
+    <div className="booking-page">
+      <style>{css}</style>
+
+      {/* Background smoke accent */}
+      <div className="bg" aria-hidden="true">
+        <span className="smoke s1" />
+        <span className="smoke s2" />
+        <span className="ribs" />
+        <span className="grain" />
+      </div>
+
+      {/* Header with navigation back to Home */}
+      <header className="booking-header">
+        <Link to="/" className="back-link" aria-label="Back to homepage">
+          <ArrowLeft size={16} aria-hidden="true" /> Back to Home
+        </Link>
+
+        <div className="booking-brand">
+          <img src={logo} alt="SuperUI logo" />
+          <span>SuperUI</span>
+        </div>
+
+        <a
+          href={BOOKING_DIRECT_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="external-btn"
+          aria-label="Open Cal.com in new tab"
+        >
+          Open in Cal.com <ExternalLink size={14} aria-hidden="true" />
+        </a>
+      </header>
+
+      {/* Booking Calendar Body */}
+      <main className="booking-body">
+        <div className="booking-card">
+          <Cal
+            namespace="website-development"
+            calLink="superui/website-development"
+            style={{ width: '100%', height: '100%', minHeight: '720px', border: 'none' }}
+            config={{ layout: 'month_view', useSlotsViewOnSmallScreen: 'true' }}
+          />
+        </div>
+      </main>
+    </div>
+  )
+}
+
+// ---------- ROUTER CONFIGURATION ----------
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/book" element={<BookingPage />} />
+        <Route path="/booking" element={<BookingPage />} />
+        <Route path="*" element={<HomePage />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
