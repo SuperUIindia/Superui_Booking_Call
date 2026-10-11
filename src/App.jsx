@@ -3,9 +3,9 @@ import { getCalApi } from '@calcom/embed-react'
 import { Instagram, Mail, MoveUpRight, CalendarCheck } from 'lucide-react'
 import logo from '/superui_logo.png'
 
-const CAL_NAMESPACE = 'superui'
-const CAL_LINK = 'https://cal.com/superui/website-development'
-const CAL_CONFIG = JSON.stringify({ layout: 'month_view', useSlotsViewOnSmallScreen: 'true', overlayCalendar: 'true' })
+const CAL_NAMESPACE = 'website-development'
+const CAL_LINK = 'superui/website-development'
+const CAL_CONFIG = JSON.stringify({ layout: 'month_view', useSlotsViewOnSmallScreen: 'true' })
 const SITE_URL = 'https://superui.in/'
 
 // Props that make the button open the Cal.com booking popup on the same page
@@ -111,7 +111,7 @@ h1 { margin: clamp(18px, 3.5vh, 32px) 0 0; font-size: clamp(1.75rem, 5vw, 3rem);
 @media (max-width: 560px) {
   .page { padding-top: calc(var(--top-h) + env(safe-area-inset-top, 0px)); padding-bottom: calc(var(--bottom-h) + env(safe-area-inset-bottom, 0px)); }
 
-  .m-top { display: block; position: fixed; top: 1; left: 0; right: 0; z-index: 30; padding: calc(12px + env(safe-area-inset-top, 0px)) var(--gutter) 0; pointer-events: none; }
+  .m-top { display: block; position: fixed; top: 0; left: 0; right: 0; z-index: 30; padding: calc(12px + env(safe-area-inset-top, 0px)) var(--gutter) 0; pointer-events: none; }
   .m-top-card { pointer-events: auto; padding: 14px 14px; text-align: center; background: var(--white); color: var(--black);  border-radius: var(--radius); box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.5); }
   .m-top-title { margin: 0; font-size: 0.875rem; font-weight: 800; letter-spacing: -0.01em; line-height: 1.25; }
   .m-top-text { margin: 2px 0 0; font-size: 0.6875rem; font-weight: 500; line-height: 1.3; color: var(--gray); }
@@ -162,21 +162,21 @@ h1 { margin: clamp(18px, 3.5vh, 32px) 0 0; font-size: clamp(1.75rem, 5vw, 3rem);
 function App() {
   useEffect(() => {
     let active = true
-    ;(async () => {
+    ;(async function () {
       try {
         const cal = await getCalApi({ namespace: CAL_NAMESPACE })
         if (!active) return
         cal('ui', {
-          theme: 'light',
-          layout: 'month_view',
           hideEventTypeDetails: false,
-          styles: { branding: { brandColor: '#000000' } },
+          layout: 'month_view',
         })
       } catch (error) {
         console.error('Cal.com booking could not be initialized.', error)
       }
     })()
-    return () => { active = false }
+    return () => {
+      active = false
+    }
   }, [])
 
   return (
@@ -213,8 +213,8 @@ function App() {
             and practical next steps. No big pitch, just a useful conversation.
           </p>
           <button className="btn" {...calProps}>
-            <CalendarCheck size={20} aria-hidden="true" />
-            Book call
+            <CalendarCheck size={20} className="pointer-events-none" aria-hidden="true" />
+            <span className="pointer-events-none">Book call</span>
           </button>
 
           <nav className="contact" aria-label="Contact">
