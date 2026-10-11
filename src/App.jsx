@@ -4,7 +4,7 @@ import { Instagram, Mail, MoveUpRight, CalendarCheck } from 'lucide-react'
 import logo from '/superui_logo.png'
 
 const CAL_NAMESPACE = 'website-development'
-const CAL_LINK = 'https://cal.com/superui/website-development'
+const CAL_LINK = 'superui/website-development'
 const CAL_CONFIG = JSON.stringify({ layout: 'month_view', useSlotsViewOnSmallScreen: 'true' })
 const SITE_URL = 'https://superui.in/'
 
