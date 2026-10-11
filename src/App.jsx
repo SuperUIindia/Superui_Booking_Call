@@ -3,7 +3,7 @@ import { getCalApi } from '@calcom/embed-react'
 import { Instagram, Mail, MoveUpRight, CalendarCheck } from 'lucide-react'
 
 const CAL_NAMESPACE = 'superui'
-const CAL_LINK = 'website-development'
+const CAL_LINK = 'https://cal.com/superui/website-development'
 const CAL_CONFIG = JSON.stringify({ layout: 'month_view', useSlotsViewOnSmallScreen: 'true', overlayCalendar: 'true' })
 const SITE_URL = 'https://superui.in/'
 
