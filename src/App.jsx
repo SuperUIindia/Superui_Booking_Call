@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { getCalApi } from '@calcom/embed-react'
 import { Instagram, Mail, MoveUpRight, CalendarCheck } from 'lucide-react'
+import logo from '/superui_logo.png'
 
 const CAL_NAMESPACE = 'superui'
 const CAL_LINK = 'https://cal.com/superui/website-development'
@@ -204,7 +205,7 @@ function App() {
 
       <main className="main">
         <section className="container" aria-labelledby="title">
-          <img className="logo" src="/superui_logo.png" alt="SuperUI logo" width="88" height="88" />
+          <img className="logo" src={logo} alt="SuperUI logo" width="88" height="88" />
           <p className="brand-name">SuperUI</p>
           <h1 id="title">Have a web project in mind? Let’s talk it through.</h1>
           <p className="lead">
